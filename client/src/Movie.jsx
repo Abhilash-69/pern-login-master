@@ -4,11 +4,11 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify'
 
-const url = "http://localhost:5000/auth/"
+const url = "http://localhost:8000/auth/"
 
-export const Movie = ({ setAuth }) => {
+export const Movie = ({JWT}) => {
     const [name, setName] = useState({})
-
+    const jwt = JWT;
     useEffect(() => {
         getProfile()
     }, [])
@@ -32,51 +32,54 @@ export const Movie = ({ setAuth }) => {
     // const [s,setS] = useState(a);
     // useEffect(() => {
     //     setMovieData(null);
-    //     axios.get(`http://127.0.0.1:5000/api/m/${movie_name}`).then((res) => {
+    //     axios.get(`http://127.0.0.1:8000/api/m/${movie_name}`).then((res) => {
     //         console.log(res.data);
     //         setMovieData(res.data);
     //     })
-    //     axios.get(`http://127.0.0.1:5000/api/ott/${movie_name}`).then((ottRes) => {
+    //     axios.get(`http://127.0.0.1:8000/api/ott/${movie_name}`).then((ottRes) => {
     //         console.log(ottRes.data);
     //         setottData(ottRes.data);
     //     });
-    //     axios.get(`http://127.0.0.1:5000/api/cast/${movie_name}`).then((castRes) => {
+    //     axios.get(`http://127.0.0.1:8000/api/cast/${movie_name}`).then((castRes) => {
     //         console.log(castRes.data);
     //         setcastData(castRes.data);
     //     });
-    //     axios.get(`http://127.0.0.1:5000/api/photos/${movie_name}`).then((imgRes) => {
+    //     axios.get(`http://127.0.0.1:8000/api/photos/${movie_name}`).then((imgRes) => {
     //         console.log(imgRes.data);
     //         setimgData(imgRes.data);
     //     });
     // }, [movie_name]);
     useEffect(() => {
-        fetchMovieData();
-        fetchReviews();
+        if(movie_name!=null){
+            fetchMovieData();
+            fetchReviews();
+        }
     }, [movie_name]);
 
     const fetchMovieData = () => {
-        axios.get(`http://127.0.0.1:5000/api/m/${movie_name}`).then((res) => {
+        axios.get(`http://127.0.0.1:8000/api/m/${movie_name}`).then((res) => {
             setMovieData(res.data);
+
         });
-        axios.get(`http://127.0.0.1:5000/api/ott/${movie_name}`).then((ottRes) => {
+        axios.get(`http://127.0.0.1:8000/api/ott/${movie_name}`).then((ottRes) => {
             setottData(ottRes.data);
         });
-        axios.get(`http://127.0.0.1:5000/api/cast/${movie_name}`).then((castRes) => {
+        axios.get(`http://127.0.0.1:8000/api/cast/${movie_name}`).then((castRes) => {
             setcastData(castRes.data);
         });
-        axios.get(`http://127.0.0.1:5000/api/photos/${movie_name}`).then((imgRes) => {
+        axios.get(`http://127.0.0.1:8000/api/photos/${movie_name}`).then((imgRes) => {
             setimgData(imgRes.data);
         });
     };
 
     const fetchReviews = () => {
-        axios.get(`http://127.0.0.1:5000/api/reviews/${movie_name}`).then((res) => {
+        axios.get(`http://127.0.0.1:8000/api/reviews/${movie_name}`).then((res) => {
             setReviews(res.data);
         });
     };
 
     const submitReview = () => {
-        axios.post(`http://127.0.0.1:5000/api/reviews/${movie_name}`, { review: newReview }).then((res) => {
+        axios.post(`http://127.0.0.1:8000/api/reviews/${movie_name}`, { review: newReview,jwt:jwt }).then((res) => {
             fetchReviews(); // Refresh reviews after submission
             setNewReview(""); // Clear input field
         }).catch((error) => {
@@ -261,20 +264,26 @@ export const Movie = ({ setAuth }) => {
                         </section>
                         <section className="pb-16 pt-16 px-20 mt-[30px] mr-[100px]">
                             <strong className="text-2xl ml-[520px] mt-12 mx-16  px-2 border-l-4 italic font-bold border-red-700">
-                                Reviews
+                                Add a Review
                             </strong>
-                            <ul>
-                                {reviews.map((review, index) => (
-                                    <li key={index}>{review}</li>
-                                ))}
-                            </ul>
                             <div>
                                 <input className="ml-[520px] mt-12 mx-16 w-[500px] bg-[rgba(255,255,255,0.25)] backdrop-blur-xl p-4 rounded-l-lg text-xl outline-none text-white" placeholder="Add Review" type="text" value={newReview} onChange={(e) => setNewReview(e.target.value)} />
                                 <button className="ml-[520px] mt-12 mx-16" onClick={submitReview}>Submit Review</button>
                             </div>
+                            <strong className="text-2xl ml-[520px] mx-16  px-2 border-l-4 italic font-bold border-red-700">
+                                Reviews
+                            </strong>
+                            <ul className="">
+                                {reviews.map((review, index) => (
+                                    <li key={index}
+                                     className="ml-[520px] mt-12 mx-16 w-[500px] bg-[rgba(255,255,255,0.25)] backdrop-blur-xl p-4 rounded-l-lg text-xl outline-none text-white">{review.review} : {review.user_name}</li>
+                                ))}
+                            </ul>
                         </section>
                     </section>
                 </main>
-            </main> : null
+            </main> : <h1>
+                Hello world
+            </h1>
     )
 }

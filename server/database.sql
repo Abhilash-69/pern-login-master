@@ -1,5 +1,5 @@
 CREATE DATABASE fresh;
-
+\c fresh
 drop table if EXISTS USER_REVIEW;
 drop table if EXISTS WATCH;
 drop table if EXISTS ACTS;
@@ -12,7 +12,7 @@ drop table if EXISTS CREW;
 drop table if EXISTS OTT;
 drop table if EXISTS ACTOR;
 drop table if EXISTS MOVIE;
-
+-- CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS MOVIE(
     m_id text PRIMARY KEY,
     m_name varchar(255),
@@ -94,3 +94,4 @@ CREATE TABLE IF NOT EXISTS USER_REVIEW(
     review TEXT
 );
 
+\d

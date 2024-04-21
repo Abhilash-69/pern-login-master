@@ -25,7 +25,8 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-        const {email, password} = req.body
+        console.log(":sdsjlsncd");
+        const {email, password} = req.body;
         const isExist = await pool.query("SELECT * FROM users WHERE user_email = ($1)", [email])
         if(isExist.rows.length < 1){
             return res.status(401).json("Invalid Email Address")

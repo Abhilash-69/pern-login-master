@@ -3,12 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify'
 import { MovieCard } from './MovieCard';
+import { Link } from 'react-router-dom';
+const url = "http://localhost:8000/auth/"
 
-const url = "http://localhost:5000/auth/"
-
-const Dashboard = ({ setAuth }) => {
-  const [name, setName] = useState({})
-
+const Dashboard = ({ setAuth ,JWT}) => {
+  const [name, setName] = useState({});
+  const jwt = JWT==null?localStorage.getItem("token"):JWT;
   useEffect(() => {
     getProfile()
   }, [])
@@ -38,7 +38,7 @@ const Dashboard = ({ setAuth }) => {
       }
       else {
         console.log(movieName);
-        axios.get("http://127.0.0.1:5000/api/search/" + movieName).then((res) => {
+        axios.get("http://127.0.0.1:8000/api/search/" + movieName).then((res) => {
           console.log(res.data);
           setSearchResult(res.data);
         })
@@ -92,9 +92,9 @@ const Dashboard = ({ setAuth }) => {
                             <ul className="flex gap-y-10 gap-x-8 flex-wrap">
                                 {searchResult.map((val, ind) => (
                                     <li className="flex" >
-                                        <a href={`/m/${val.movieLink}`} >
+                                        <Link to={{ pathname: `/m/${val.movieLink}`, state: { jwt } }}>
                                             <MovieCard image={val.movieImage} name={val.movieTitle} />
-                                        </a>
+                                        </Link>
                                     </li>
                                 ))}
                             </ul>

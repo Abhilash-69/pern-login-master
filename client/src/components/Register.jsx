@@ -3,10 +3,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios'
 import 'react-toastify/dist/ReactToastify.css';
-import cine from 'C:/Users/Abhilash/Downloads/pern-login-master/client/src/assets/1.png';
-import coll from 'C:/Users/Abhilash/Downloads/pern-login-master/client/src/assets/gandr-collage2.jpg';
+import cine from '../assets/1.png';
+import coll from '../assets/gandr-collage2.jpg';
 
-const url = "http://localhost:5000/auth"
+const url = "http://localhost:8000/auth"
 
 const Register = ({setAuth}) => {
     const navigate = useNavigate();
@@ -43,7 +43,7 @@ const Register = ({setAuth}) => {
                     const token = response.data.token
                     if(token){
                         localStorage.setItem("token", token);
-                        setAuth(true);
+                        setAuth(true,token);
                         toast.success(postResponse);
                     }else{
                         setAuth(false)
@@ -144,7 +144,7 @@ const Register = ({setAuth}) => {
                   <label htmlFor="audience" style={radioLabelStyles}>Audience</label>
                 </div>
               </div> */}
-              <button type="submit" className="button" style={buttonStyles} >
+              <button type="submit" className="button" style={buttonStyles} onClick={handleSubmit}>
                 REGISTER
               </button>
             </form>

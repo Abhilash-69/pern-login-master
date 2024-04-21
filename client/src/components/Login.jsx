@@ -3,12 +3,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios'
 import 'react-toastify/dist/ReactToastify.css';
-import cine from 'C:/Users/Abhilash/Downloads/pern-login-master/client/src/assets/0.png';
-import coll from 'C:/Users/Abhilash/Downloads/pern-login-master/client/src/assets/gandr-collage.jpg';
+import cine from '../assets/0.png';
+import coll from '../assets/gandr-collage.jpg';
 
 
 
-const url = "http://localhost:5000/auth"
+const url = "http://127.0.0.1:8000/auth"
 
 const Login = ({ setAuth }) => {
     const navigate = useNavigate();
@@ -18,6 +18,7 @@ const Login = ({ setAuth }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        console.log("email , Password");
         const data = { email, password }
         if (email == "" || password == "") {
             setErrorMessage("Invalid Credentials")
@@ -28,7 +29,8 @@ const Login = ({ setAuth }) => {
                     const token = response.data.token
                     if (token) {
                         localStorage.setItem("token", token);
-                        setAuth(true)
+                        setAuth(true,token);
+                        handleClick();
                         toast.success("Logged in Successfully");
                     } else {
                         toast.error("LOG IN FAILED");
@@ -142,7 +144,7 @@ const Login = ({ setAuth }) => {
                     </h1>
                     <input type="text" value={email} placeholder="E-mail" name="email" id="email" required style={inputStyles} onChange={(e) => setEmail(e.target.value)}/>
                     <input type="password" value={password} placeholder="Password" name="password" id="password" required style={inputStyles} onChange={(e) => setPassword(e.target.value)}/>
-                    <button type="submit" className="button" style={buttonStyles}>
+                    <button type="submit" className="button" style={buttonStyles} >
                         Login
                     </button>
                 </form>

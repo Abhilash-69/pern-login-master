@@ -21,13 +21,15 @@ const {scrap_movie_photos} = require("./scrap")
 const {scrap_actor_info} = require("./castScrap");
 const {scrap_ott} = require("./scrap");
 const {scrap_search} = require("./scrap");
+const { verify } = require("jsonwebtoken")
+const { authorizeUser } = require("./middleware/authorize")
 require("dotenv").config()
+app.use(express.json()) //  Gets the value from the req.body
 app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 5000
 
 //Middleware
-app.use(express.json()) //  Gets the value from the req.body
 app.use(cors()) //Allows for multiple access from different sites
 
 //Routes
@@ -67,8 +69,8 @@ app.get("/api/m/:movie_name",async (req,res)=>{
         res.json(s.rows[0])
     }
     else{
-        console.log(resp.rowCount)
-        res.json(resp.rows[0])
+        console.log(resp.rowCount);
+        res.json(resp.rows[0]);
     }
 })
 
@@ -102,15 +104,18 @@ app.get("/api/photos/:movie_name", async (req,res) => {
 
 app.get("/api/reviews/:movie_name", async (req, res) => {
     const movie_name = req.params.movie_name;
-    const resp = await db.query(`SELECT review FROM user_review WHERE m_id = $1`, [movie_name]);
-    const reviews = resp.rows.map(row => row.review);
-    res.json(reviews);
+    const resp = await db.query(`SELECT review,user_name FROM user_review  join users on users.user_id=user_review.user_id WHERE m_id = $1`, [movie_name]);
+    // const reviews = resp.rows.map(row => [{review:row.review,user_id:row.user_id}]);
+    res.json(resp.rows);
 });
 
 app.post("/api/reviews/:movie_name", async (req, res) => {
     const movie_name = req.params.movie_name;
-    const { review } = req.body;
-    const resp = await db.query("INSERT INTO user_review (m_id, review) VALUES ($1, $2) RETURNING *", [movie_name, review]);
+    const { review,jwt } = req.body;
+    console.log(jwt);
+    const user_id = await authorizeUser(jwt);
+    // console.log(user_id);
+    const resp = await db.query("INSERT INTO user_review (m_id, review,user_id) VALUES ($1, $2,$3) RETURNING *", [movie_name, review,user_id]);
     res.json({ message: "Review added successfully" });
 });
 
